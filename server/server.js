@@ -20,8 +20,9 @@ app.use(
     origin: [process.env.CLIENT_URL],
   })
 );
+app.use(morgan('dev'));
 // autoload routes
-
+readdirSync('./routes').map((r) => app.use('/api', require(`./routes/${r}`)));
 // listen
 const port = process.env.PORT || 8000;
 app.listen(port, () => console.log(`Server running on port ${port}`));

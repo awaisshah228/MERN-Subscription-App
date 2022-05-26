@@ -4,7 +4,7 @@ import Input from '../components/Input';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-function Register() {
+function Register({ history }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,9 +12,22 @@ function Register() {
   const handleClick = async (e) => {
     try {
       e.preventDefault();
-      const { data } = await axios.post('/register', { name, email, password });
-      console.log(data);
-      toast.success('Registered successfully! Please login.');
+      const { data } = await axios.post('http://localhost:8000/api/register', {
+        name,
+        email,
+        password,
+      });
+      // console.log(data);
+
+      if (data.error) {
+        toast.error(data.error);
+      } else {
+        setName('');
+        setEmail('');
+        setPassword('');
+        toast.success(`Hey ${data.user.name}, you are registered successfully`);
+        history.push('/login');
+      }
     } catch (err) {
       console.log(err);
       toast.error('Something went wrong. Try again');
@@ -51,9 +64,9 @@ function Register() {
             </div>
           </div>
         </div>
-        <div className='row'>
+        {/* <div className='row'>
           <pre>{JSON.stringify({ name, email, password }, null, 2)}</pre>
-        </div>
+        </div> */}
       </div>
     </div>
   );
