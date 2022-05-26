@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { UserContext } from '../context';
 
 function Login({ history }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [state, setState] = useContext(UserContext);
+
   const handleClick = async (e) => {
- 
     try {
       e.preventDefault();
       const { data } = await axios.post('http://localhost:8000/api/login', {
@@ -23,6 +25,8 @@ function Login({ history }) {
       } else {
         setEmail('');
         setPassword('');
+        setState(data);
+        localStorage.setItem('auth', JSON.stringify(data));
         history.push('/');
       }
     } catch (err) {
@@ -40,7 +44,6 @@ function Login({ history }) {
             Access your subscriptions. Anytime. Anywhere
           </p>
           <div className='form-group'>
-         
             <Input
               label='Email'
               type='email'
